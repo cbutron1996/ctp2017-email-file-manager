@@ -2,7 +2,7 @@
   "development": {
     "username": "ctp_user",
     "password": "ctp_user",
-    "database": "app_development",
+    "database": "efm_development",
     "host": "127.0.0.1",
     "dialect": "postgresql"
   },

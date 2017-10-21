@@ -1,7 +1,7 @@
 {
-  "name": "backend-starter-code",
+  "name": "email-file-manager",
   "version": "1.0.0",
-  "description": "Starter code for an Express/Sequelize backend.",
+  "description": "CTP 2017 Email File Manager",
   "main": "app.js",
   "scripts": {
     "start": "nodemon -L app.js",
