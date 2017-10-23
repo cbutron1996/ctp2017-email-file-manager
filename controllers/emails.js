@@ -29,8 +29,12 @@ router.post('/', (req, res) => {
   imap.once('ready', function() {
     openInbox(function(err, box) {
       if (err) throw err;
-      var f = imap.seq.fetch('1:3', {
-        bodies: 'HEADER.FIELDS (FROM TO SUBJECT DATE)',
+      //var f = imap.seq.fetch('1:3', {
+      //  bodies: 'HEADER.FIELDS (FROM TO SUBJECT DATE)',
+      //  struct: true
+      //});
+      var f = imap.seq.fetch(box.messages.total + ':*', {
+        bodies: '',
         struct: true
       });
       f.on('message', function(msg, seqno) {
@@ -58,6 +62,7 @@ router.post('/', (req, res) => {
         console.log('Done fetching all messages!');
         imap.end();
       });
+      res.json(f);
     });
   });
 
@@ -71,9 +76,9 @@ router.post('/', (req, res) => {
 
   imap.connect();
 
-  res.json({
-    msg: "Successful POST to '/emails' route"
-  });
+  //res.json({
+  //  msg: "Successful POST to '/emails' route"
+  //});
 });
 
 
