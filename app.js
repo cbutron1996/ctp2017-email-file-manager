@@ -2,7 +2,8 @@ const bodyParser = require('body-parser');
 const express = require('express');
 const models = require('./models');
 const expressSession = require('express-session');
-const passport = require('./middlewares/authentication');
+//const passport = require('./middlewares/authentication');
+const passport = require('./middlewares/google-oauth');
 
 const PORT = process.env.PORT || 8000;
 
@@ -15,6 +16,17 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(expressSession(({ secret: 'keyboard cat', resave: false, saveUninitialized: true })));
 app.use(passport.initialize());
 app.use(passport.session());
+
+
+app.get('/auth/google',
+  passport.authenticate('google', { scope: ['email profile'] }));
+
+app.get('/auth/google/callback',
+  passport.authenticate('google', { failureRedirect: '/login' }),
+  function(req, res) {
+    // Authenticated successfully
+    res.redirect('/');
+  });
 
 
 // Uncomment the following if you want to serve up static assets.
