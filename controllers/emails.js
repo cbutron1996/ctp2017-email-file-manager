@@ -7,16 +7,10 @@ const inspect = require('util').inspect;
 const router = express.Router();
 
 router.get('/', (req, res) => {
-  res.json({
-    msg: "Successful GET to '/emails' route"
-  });
-});
-
-router.post('/', (req, res) => {
 
   var imap = new Imap({
-    user: req.body.user,
-    password: req.body.password,
+    user: req.user.email,
+    password: req.user.password,
     host: 'imap.gmail.com',
     port: 993,
     tls: true
@@ -62,7 +56,7 @@ router.post('/', (req, res) => {
         console.log('Done fetching all messages!');
         imap.end();
       });
-      res.json(f);
+      //res.json(f);
     });
   });
 
@@ -76,9 +70,15 @@ router.post('/', (req, res) => {
 
   imap.connect();
 
-  //res.json({
-  //  msg: "Successful POST to '/emails' route"
-  //});
+  res.json({
+    msg: "Successful GET to '/emails' route"
+  });
+});
+
+router.post('/', (req, res) => {
+  res.json({
+    msg: "Successful POST to '/emails' route"
+  });
 });
 
 
