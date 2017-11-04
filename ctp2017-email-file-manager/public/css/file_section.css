@@ -1,0 +1,9 @@
+.file_title p {
+  display:inline-block;
+}
+.sections .section_file {
+  color:blue;
+}
+.file_title {
+  margin-bottom: 30px;
+}

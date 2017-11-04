@@ -1,0 +1,30 @@
+{
+  "name": "email-file-manager",
+  "version": "1.0.0",
+  "description": "CTP 2017 Email File Manager",
+  "main": "app.js",
+  "scripts": {
+    "start": "nodemon -L app.js",
+    "test": "jest"
+  },
+  "author": "Edgardo Molina",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^21.2.1"
+  },
+  "dependencies": {
+    "bcrypt-nodejs": "0.0.3",
+    "body-parser": "^1.18.2",
+    "express": "^4.16.1",
+    "express-handlebars": "^3.0.0",
+    "express-session": "^1.15.6",
+    "imap": "^0.8.19",
+    "nodemon": "^1.12.1",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pg": "^7.3.0",
+    "pg-hstore": "^2.3.2",
+    "sequelize": "^4.13.3",
+    "sequelize-cli": "^3.0.0"
+  }
+}

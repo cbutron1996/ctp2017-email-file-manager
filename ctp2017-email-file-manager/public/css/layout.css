@@ -1,0 +1,44 @@
+.small_log {
+  height: 12%;
+}
+.title_page {
+  width: 200%;
+  padding-left:100%;
+  font-size: 60px;
+}
+.heading {
+  display: inline-block;
+  margin-top: 3%;
+}
+.search_box {
+  background-color: white;
+  margin-left:450%;
+  border: 2px solid #ccc;
+  border-radius: 20%;
+  height: 5%;
+  background-image: url('/img/searchicon.png');
+  background-position: 10px 10px;
+  background-size: 20px 20px;
+  padding: 12px 20px 12px 30px;
+  background-repeat: no-repeat;
+}
+input:focus {
+    width: 100%;
+    outline: none;
+}
+
+.sections {
+  margin-top: 4%;
+  margin-left: 2%;
+  font-size: 22px;
+}
+.sections a {
+  color:grey;
+  display: block;
+  text-decoration: none;
+  width: 100px;
+}
+
+.sections a:hover {
+    color: blue;
+}
