@@ -2,8 +2,8 @@
   height: 12%;
 }
 .title_page {
-  width: 200%;
-  padding-left:100%;
+  width: 175%;
+  padding-left:75%;
   font-size: 60px;
 }
 .heading {
@@ -41,4 +41,7 @@ input:focus {
 
 .sections a:hover {
     color: blue;
+}
+.body_name {
+  display: inline-block;
 }

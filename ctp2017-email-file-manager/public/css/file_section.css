@@ -1,9 +1,25 @@
 .file_title p {
-  display:inline-block;
+  display:inline-block
 }
 .sections .section_file {
   color:blue;
 }
 .file_title {
   margin-bottom: 30px;
+  margin-left: 195px;
+  height: 0px;
+  width: 65%;
+}
+.file_from {
+  padding-left: 400px;
+}
+.file_to {
+  padding-left: 200px;
+}
+.file_date {
+  padding-left: 200px;
+}
+.line {
+  margin-top: -15px;
+  width: auto;
 }
