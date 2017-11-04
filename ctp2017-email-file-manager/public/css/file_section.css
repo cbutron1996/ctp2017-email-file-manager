@@ -5,21 +5,24 @@
   color:blue;
 }
 .file_title {
-  margin-bottom: 30px;
-  margin-left: 195px;
-  height: 0px;
+  margin-left: 10%;
+  height: 0%;
   width: 65%;
 }
+.file_name {
+  padding-left: 5%;
+}
 .file_from {
-  padding-left: 400px;
+  padding-left: 30%;
 }
 .file_to {
-  padding-left: 200px;
+  padding-left: 20%;
 }
 .file_date {
-  padding-left: 200px;
+  padding-left: 20%;
 }
 .line {
-  margin-top: -15px;
-  width: auto;
+  margin-top: -1%;
+  width: 100%;
+  margin-left: 5%;
 }
