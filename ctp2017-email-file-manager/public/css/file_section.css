@@ -1,5 +1,6 @@
 .file_title p {
-  display:inline-block
+  display:inline-block;
+  font-family: avenir next;
 }
 .sections .section_file {
   color:blue;

@@ -1,12 +1,14 @@
 .small_log {
-  height: 12%;
+  height: 15%;
 }
 .title_page {
   width: 175%;
   padding-left:75%;
   font-size: 400%;
+  font-family: museo;
 }
 .heading {
+  margin-left: 1%;
   display: inline-block;
   margin-top: 3%;
 }
@@ -36,6 +38,7 @@ input:focus {
   color:grey;
   display: block;
   text-decoration: none;
+  font-family: museo;
 }
 
 .sections a:hover {
