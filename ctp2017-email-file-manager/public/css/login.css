@@ -1,0 +1,49 @@
+.input-group {
+  width: 35%;
+  margin-left: 29%;
+  margin-top: 3%;
+}
+.login-button {
+  margin-top:1%;
+  margin-left: 29%;
+  width: 10%;
+}
+.remember_me {
+  color:grey;
+  display: inline-block;
+}
+.checkbox {
+  width: 11%;
+  margin-left: 29%;
+}
+
+.forget_password {
+  color:grey;
+  margin-left: 13%;
+}
+.login_username_icon, .login_password_icon {
+  color:rgb(200, 200, 200);
+}
+.login_fleid {
+  border-left: none;
+  background-color: rgb(245, 245, 245);
+}
+.input-group-addon {
+  border-right:none;
+  background-color: rgb(245, 245, 245);
+}
+.forget_password, .forget_password:hover, .forget_password:active, .forget_password:visited, .forget_password:focus {
+    text-decoration:none;
+}
+.login_google {
+  border-radius: 10px;
+  width: 20%;
+  margin-left: 37%;
+  background: #dd4b39;
+}
+.google_icon, .google_text {
+  color:white;
+}
+.google_icon {
+  padding-right: 30%;
+}
