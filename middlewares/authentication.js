@@ -4,47 +4,22 @@ const LocalStrategy = require('passport-local').Strategy;
 
 const Users = require('../models').Users;
 
-const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const GoogleStrategy = require('passport-google-oauth20').Strategy;
 
 passport.use(new GoogleStrategy({
-    clientID: "434306998415-5f832nmc41pk44u6t6op0nfsp60la88s.apps.googleusercontent.com",
-    clientSecret: "49Dwi-UagnZHF-zKfWfRBIu3",
-    callbackURL: "http://localhost:8000"
-  },
-  function(accessToken, refreshToken, profile, cb) {
-    User.findOrCreate({ googleId: profile.id }, function (err, user) {
-      return cb(err, user);
+    clientID        : '434306998415-5f832nmc41pk44u6t6op0nfsp60la88s.apps.googleusercontent.com',
+    clientSecret    : '49Dwi-UagnZHF-zKfWfRBIu3',
+    callbackURL     : 'http://localhost:8000/auth/google/callback'
+  }, function(accessToken, refreshToken, profile, cb) {
+    console.log(accessToken);
+    Users.findOne({
+      email: profile.emails[0].value
+    }).then((user) => {
+      user.accessToken = accessToken;
+      cb(null, user);
     });
   }
 ));
-
-function passwordsMatch(passwordSubmitted, storedPassword) {
-  return bcrypt.compareSync(passwordSubmitted, storedPassword);
-}
-
-passport.use(new LocalStrategy({
-    usernameField: 'email',
-  },
-  (email, password, done) => {
-    Users.findOne({
-      where: { email },
-    }).then((user) => {
-      debugger;
-
-      if(!user) {
-        return done(null, false, { message: 'Incorrect email.' });
-      }
-
-      if (passwordsMatch(password, user.password) === false) {
-        console.log('\n\nerror match\n\n')
-        return done(null, false, { message: 'Incorrect password.' });
-      }
-
-      console.log('\n\ncorrect login!!\n\n')
-      return done(null, user, { message: 'Successfully Logged In!' });
-    });
-  })
-);
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

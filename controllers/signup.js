@@ -12,6 +12,7 @@ router.post('/', (req, res) => {
     lastName: req.body.lastName,
     email: req.body.email,
     password: req.body.password,
+    accessToken: null
   }).then((user) => {
     req.login(user, () =>
       res.redirect('/profile')

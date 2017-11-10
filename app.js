@@ -3,10 +3,15 @@ const express = require('express');
 const models = require('./models');
 const expressSession = require('express-session');
 const passport = require('./middlewares/authentication');
+const Gmail = require('node-gmail-api');
 
 const PORT = process.env.PORT || 8000;
 
 const app = express();
+
+const SCOPES = ['email', 'profile', 'https://mail.google.com/'];
+
+//const Gmail = require('node-gmail-api');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -16,17 +21,25 @@ app.use(expressSession(({ secret: 'keyboard cat', resave: false, saveUninitializ
 app.use(passport.initialize());
 app.use(passport.session());
 
-
-app.get('/auth/google',
-  passport.authenticate('google', { scope: ['email profile'] }));
+app.get('/auth/google', passport.authenticate('google', { scope : SCOPES }));
 
 app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
-    // Authenticated successfully
-    res.redirect('/');
+    // Successful authentication, redirect home.
+    var gmail = new Gmail(req.user.accessToken);
+    var s = gmail.messages('label:inbox', {max: 10});
+    s.on('data', function (d) {
+      console.log(d.snippet)
+    });
+
+    res.redirect('/emails');
   });
 
+app.get('/logout', (req, res) => {
+  req.logout();
+  res.redirect('/');
+});
 
 // Uncomment the following if you want to serve up static assets.
 // (You must create the public folder)
