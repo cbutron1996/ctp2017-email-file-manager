@@ -23,7 +23,7 @@ passport.use(new GoogleStrategy({
           name: profile.displayName,
           email: profile.emails[0].value,
           accessToken: accessToken
-        }).then((user) => {
+        }).then(user => {
           cb(null, user);
         });
       }
