@@ -11,12 +11,37 @@ passport.use(new GoogleStrategy({
     clientSecret    : '49Dwi-UagnZHF-zKfWfRBIu3',
     callbackURL     : 'http://localhost:8000/auth/google/callback'
   }, function(accessToken, refreshToken, profile, cb) {
-    console.log(accessToken);
+    //console.log(accessToken);
+    // Users.findOne({ email: profile.emails[0].value }).then((user) => {
+    //   user.accessToken = accessToken;
+    //   cb(null, user);
+    // });
     Users.findOne({
-      email: profile.emails[0].value
-    }).then((user) => {
-      user.accessToken = accessToken;
-      cb(null, user);
+      where: { googleId: profile.id }
+    }).then(user => {
+      if(user) {
+        user.accessToken = accessToken;
+        cb(null, user);
+      } else {
+        // var newUser = new Users();
+        // newUser.googleId = profile.id;
+        // newUser.accessToken = accessToken;
+        // newUser.name = profile.displayName;
+        // newUser.email = profile.emails[0].value;
+        //
+        // newUser.save();
+        // user = newUser;
+        // cb(null, user);
+
+        Users.create({
+          googleId: profile.id,
+          name: profile.displayName,
+          email: profile.emails[0].value,
+          accessToken: accessToken
+        }).then((user) => {
+          cb(null, user);
+        });
+      }
     });
   }
 ));

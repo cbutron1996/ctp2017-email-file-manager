@@ -27,12 +27,6 @@ app.get('/auth/google/callback',
   passport.authenticate('google', { failureRedirect: '/login' }),
   function(req, res) {
     // Successful authentication, redirect home.
-    var gmail = new Gmail(req.user.accessToken);
-    var s = gmail.messages('label:inbox', {max: 10});
-    s.on('data', function (d) {
-      console.log(d.snippet)
-    });
-
     res.redirect('/emails');
   });
 
