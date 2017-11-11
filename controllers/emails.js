@@ -3,18 +3,20 @@ const models = require('../models');
 
 const router = express.Router();
 
-const Gmail = require('node-gmail-api');
+const google = require('googleapis');
 
 router.get('/', (req, res) => {
-  var gmail = new Gmail(req.user.accessToken);
-  var s = gmail.messages('label:inbox', {max: 10});
-  var buffer = '';
-  s.on('data', function (d) {
-    console.log(d.snippet)
-    buffer = d.snippet;
-  });
-  res.json({
-    msg: buffer
+  var gmail = google.gmail('v1');
+  gmail.users.messages.list({
+    access_token: req.user.accessToken,
+    userId: 'me'
+  }, function(err, response) {
+    if (err) {
+      res.json({ err });
+      return;
+    }
+    var emails = response.messages;
+    res.json(emails);
   });
 });
 
