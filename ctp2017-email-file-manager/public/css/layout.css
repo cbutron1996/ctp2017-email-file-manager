@@ -11,7 +11,7 @@
   margin-top: 3%;
 }
 .title_page_div {
-  margin-left: 11.5%;
+  margin-left: 10%;
 }
 .search_box_div {
   margin-left: 40%;
@@ -33,20 +33,28 @@ input:focus {
 }
 
 .sections {
+  border: 1px solid black;
   margin-top: 4%;
   margin-left: 2%;
   font-size: 150%;
 }
-.sections a {
+.body_name a {
   color:grey;
   display: block;
   text-decoration: none;
   font-family: museo;
 }
-
-.sections a:hover {
+.body_name {
+  position: absolute;
+}
+.body_name a:hover {
     color: blue;
 }
-.body_name {
+.body_name, .body_content {
+  border: 1px solid black;
   display: inline-block;
+}
+.body_content {
+  border: 1px solid black;
+  margin-left: 17%;
 }
