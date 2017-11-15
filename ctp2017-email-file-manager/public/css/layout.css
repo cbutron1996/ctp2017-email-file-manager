@@ -33,7 +33,6 @@ input:focus {
 }
 
 .sections {
-  border: 1px solid black;
   margin-top: 4%;
   margin-left: 2%;
   font-size: 150%;
@@ -51,10 +50,8 @@ input:focus {
     color: blue;
 }
 .body_name, .body_content {
-  border: 1px solid black;
   display: inline-block;
 }
 .body_content {
-  border: 1px solid black;
   margin-left: 17%;
 }
