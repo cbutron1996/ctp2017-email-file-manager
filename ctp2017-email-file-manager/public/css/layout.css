@@ -2,19 +2,22 @@
   height: 15%;
 }
 .title_page {
-  width: 175%;
-  padding-left:75%;
   font-size: 400%;
   font-family: museo;
 }
-.heading {
+.title_image, .search_box_div,.title_page_div {
   margin-left: 1%;
   display: inline-block;
   margin-top: 3%;
 }
+.title_page_div {
+  margin-left: 11.5%;
+}
+.search_box_div {
+  margin-left: 40%;
+}
 .search_box {
   background-color: white;
-  margin-left:450%;
   border: 2px solid #ccc;
   border-radius: 20%;
   height: 5%;
