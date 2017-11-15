@@ -3,7 +3,6 @@ const express = require('express');
 const models = require('./models');
 const expressSession = require('express-session');
 const passport = require('./middlewares/authentication');
-const Gmail = require('node-gmail-api');
 
 const PORT = process.env.PORT || 8000;
 

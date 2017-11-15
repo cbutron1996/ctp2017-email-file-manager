@@ -19,8 +19,6 @@
     "express-handlebars": "^3.0.0",
     "express-session": "^1.15.6",
     "googleapis": "^22.2.0",
-    "imap": "^0.8.19",
-    "node-gmail-api": "^0.6.1",
     "nodemon": "^1.12.1",
     "passport": "^0.4.0",
     "passport-google-oauth": "^1.0.0",
