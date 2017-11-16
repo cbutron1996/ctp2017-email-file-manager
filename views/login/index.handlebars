@@ -1,13 +1,27 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="/css/login.css">
+</head>
 <div class="container">
   <form action="/login" method="post">
-    <div class="form-group">
-      <label for="email">Email address</label>
-      <input type="email" class="form-control" name="email" aria-describedby="emailHelp" placeholder="Enter email">
+    <div class="login_google">
+    <a class="btn btn-block btn-social btn-google google_link">
+      <span class="fa fa-google google_icon"></span> <span class="google_text">Sign in with Google</span>
+    </a>
+  </div>
+    <div class="input-group">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-user login_username_icon"></i></span>
+      <input type="email" class="form-control login_fleid" name="email" aria-describedby="emailHelp" placeholder="Email">
     </div>
-    <div class="form-group">
-      <label for="password">Password</label>
-      <input type="password" class="form-control" name="password" placeholder="Password">
+    <div class="input-group">
+      <span class="input-group-addon"><i class="glyphicon glyphicon-lock login_password_icon"></i></span>
+      <input type="password" class="form-control login_fleid" name="password" placeholder="Password">
     </div>
-    <button type="submit" class="btn btn-primary">Login</button>
+    <div>
+    <div class="checkbox remember_me">
+        <label><input type="checkbox" value="">Remember Me</label>
+    </div>
+    <a href="#" class="forget_password">Forget Password?</a>
+  </div>
+    <button type="submit" class="btn btn-primary login-button">LOGIN</button>
   </form>
 </div>

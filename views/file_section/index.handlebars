@@ -1,29 +1,29 @@
 <head>
   <link rel="stylesheet" type="text/css" href="/css/file_section.css">
 </head>
-<table class="table table-responsive">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>From</th>
-      <th>To</th>
-      <th>Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    <!-- example to create a row -->
-    <!-- <tr>
-      <td>Juldy</td>
-      <td>Dooley</td>
-      <td>july@example.com</td>
-    </tr> -->
-    {{#each emails}}
+  <table class="table table-responsive">
+    <thead>
       <tr>
-        <td>{{this.email}}</td>
-        <td>{{this.from}}</td>
-        <td>{{this.to}}</td>
-        <td>{{this.date}}</td>
+        <th>Subject</th>
+        <th>From</th>
+        <th>To</th>
+        <th>Date</th>
       </tr>
-    {{/each}}
-  </tbody>
-</table>
+    </thead>
+    <tbody>
+      <!-- example to create a row -->
+      <!-- <tr>
+        <td>Juldy</td>
+        <td>Dooley</td>
+        <td>july@example.com</td>
+      </tr> -->
+      {{#each emails}}
+        <tr>
+          <td>{{this.subject}}</td>
+          <td>{{this.from}}</td>
+          <td>{{this.to}}</td>
+          <td>{{this.date}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>
