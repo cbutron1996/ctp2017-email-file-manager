@@ -1,10 +1,32 @@
 <html>
   <head>
-    <title>Test app</title>
+    <title>Mail Man</title>
     {{> stylesheets }}
+    <link rel="stylesheet" type="text/css" href="/css/layout.css">
   </head>
   <body>
-    {{{ body }}}
+    <div class="heading">
+      <img src="/img/Logo-d2.png" alt="Logo" class="small_log">
+    </div>
+    <div class="heading">
+      <h1 class="title_page">Mail Man</h1>
+    </div>
+    <div class="heading">
+      <form>
+        <input type="text" name="search" placeholder="Search.." class="search_box">
+      </form>
+    </div>
+    <div class="sections">
+      <div class="body_name">
+        <a href="#" class="section_email">Email</a>
+      </div>
+      {{{ body }}}
+    <a href="#" class="section_file">Files</a>
+    <a href="#" class="section_topic">Topics</a>
+    <a href="#" class="section_archived">Archived</a>
+    <a href="#" class="section_deleted">deleted</a>
+    </div>
+    </div>
   </body>
     {{> scripts }}
 </html>

@@ -13,6 +13,7 @@
     "jest": "^21.2.1"
   },
   "dependencies": {
+    "atob": "^2.0.3",
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "^1.18.2",
     "express": "^4.16.1",

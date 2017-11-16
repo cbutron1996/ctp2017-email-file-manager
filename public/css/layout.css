@@ -1,0 +1,49 @@
+.small_log {
+  height: 15%;
+}
+.title_page {
+  width: 175%;
+  padding-left:75%;
+  font-size: 400%;
+  font-family: museo;
+}
+.heading {
+  margin-left: 1%;
+  display: inline-block;
+  margin-top: 3%;
+}
+.search_box {
+  background-color: white;
+  margin-left:450%;
+  border: 2px solid #ccc;
+  border-radius: 20%;
+  height: 5%;
+  background-image: url('/img/searchicon.png');
+  background-position: 2% 50%;
+  background-size: 10% 50%;
+  padding: 6% 20px 12px 30px;
+  background-repeat: no-repeat;
+}
+input:focus {
+    width: 100%;
+    outline: none;
+}
+
+.sections {
+  margin-top: 4%;
+  margin-left: 2%;
+  font-size: 150%;
+}
+.sections a {
+  color:grey;
+  display: block;
+  text-decoration: none;
+  font-family: museo;
+}
+
+.sections a:hover {
+    color: blue;
+}
+.body_name {
+  display: inline-block;
+}

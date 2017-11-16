@@ -8,8 +8,7 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
   Users.create({
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
+    name: req.body.name,
     email: req.body.email,
     password: req.body.password,
     accessToken: null

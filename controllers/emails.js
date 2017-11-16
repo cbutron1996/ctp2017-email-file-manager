@@ -4,6 +4,7 @@ const Emails = models.Emails;
 const router = express.Router();
 const google = require('googleapis');
 const gmail = google.gmail('v1');
+const atob = require('atob');
 
 function getMessagesFull(req, messages) {
   messages.forEach(function(message) {
@@ -13,14 +14,14 @@ function getMessagesFull(req, messages) {
       id: message.id,
     }, function(err, response) {
       if (err) {
-        res.json(err);
         return;
       }
       Emails.findOne({
         where: { message_id: response.id }
       }).then(email => {
+
+
         var headers = response.payload.headers;
-        
         var subject = headers.find(function(element) {
           return element.name === "Subject";
         });
@@ -30,22 +31,38 @@ function getMessagesFull(req, messages) {
         var from = headers.find(function(element) {
           return element.name === "From";
         });
+        var date = headers.find(function(element) {
+          return element.name === "Date";
+        });
+
+        var body = response.snippet;
+
+        var num_attach = 0;
+        if(response.payload.parts) {
+          num_attach = response.payload.parts.length-1;
+        }
 
         if(email) {
           email.updateAttributes({
-            user_id: req.user.email,
             message_id: response.id,
             subject: subject.value,
             to: to.value,
             from: from.value,
+            date: date.value,
+            body: body,
+            num_attach: num_attach,
+            user_id: req.user.email,
           });
         } else {
           Emails.create({
-            user_id: req.user.email,
             message_id: response.id,
             subject: subject.value,
             to: to.value,
             from: from.value,
+            date: date.value,
+            body: body,
+            num_attach: num_attach,
+            user_id: req.user.email,
           });
         }
       });
@@ -56,7 +73,8 @@ function getMessagesFull(req, messages) {
 function getMessages(req, res) {
   var request = gmail.users.messages.list({
     access_token: req.user.accessToken,
-    userId: 'me'
+    userId: 'me',
+    labelIds: ['INBOX'],
   }, function(err, response) {
     if (err) {
       res.json(err);
@@ -94,7 +112,7 @@ function getAttachments(req, res) {
       res.json(err);
       return;
     }
-    var parts = response.payload.parts;
+    var parts = response.payload.parts[0].parts[0].body.data;
     res.header("Content-Type", 'application/json');
     res.send(JSON.stringify(parts, null, '\t'));
   });

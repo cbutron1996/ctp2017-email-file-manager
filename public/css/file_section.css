@@ -1,0 +1,29 @@
+.file_title p {
+  display:inline-block;
+  font-family: avenir next;
+}
+.sections .section_file {
+  color:blue;
+}
+.file_title {
+  margin-left: 10%;
+  height: 0%;
+  width: 65%;
+}
+.file_name {
+  padding-left: 5%;
+}
+.file_from {
+  padding-left: 30%;
+}
+.file_to {
+  padding-left: 20%;
+}
+.file_date {
+  padding-left: 20%;
+}
+.line {
+  margin-top: -1%;
+  width: 100%;
+  margin-left: 5%;
+}
