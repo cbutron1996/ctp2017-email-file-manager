@@ -1,11 +1,19 @@
 const express = require('express');
 const models = require('../models');
-
+const Emails = models.Emails;
 const router = express.Router();
 
 
 router.get('/', (req, res) => {
-  res.render('file_section', { user: req.user })
+  Emails.findAll({
+    where: { user_id: req.user.email }
+  }).then((emails) => {
+      res.render('file_section', {
+        user: req.user,
+        emails: emails,
+      })
+    }
+  )
 });
 
 
