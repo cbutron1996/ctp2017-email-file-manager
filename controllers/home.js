@@ -5,15 +5,16 @@ const router = express.Router();
 
 
 router.get('/', (req, res) => {
-  Emails.findAll({
-    where: { user_id: req.user.email }
-  }).then((emails) => {
-      res.render('file_section', {
-        user: req.user,
-        emails: emails,
-      })
-    }
-  )
+  // Emails.findAll({
+  //   where: { user_id: req.user.email }
+  // }).then((emails) => {
+  //     res.render('file_section', {
+  //       user: req.user,
+  //       emails: emails,
+  //     })
+  //   }
+  // );
+  res.render('home');
 });
 
 

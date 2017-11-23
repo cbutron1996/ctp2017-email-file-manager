@@ -82,8 +82,8 @@ function getMessages(req, res) {
     }
     var messages = response.messages;
     getMessagesFull(req, messages);
-    res.header("Content-Type", 'application/json');
-    res.send(JSON.stringify(response, null, '\t'));
+    // res.header("Content-Type", 'application/json');
+    // res.send(JSON.stringify(response, null, '\t'));
   });
 }
 
@@ -121,6 +121,15 @@ function getAttachment(req, res) {
 
 router.get('/', (req, res) => {
   getMessages(req, res);
+  Emails.findAll({
+    where: { user_id: req.user.email }
+  }).then((emails) => {
+      res.render('file_section', {
+        user: req.user,
+        emails: emails,
+      })
+    }
+  );
 });
 
 router.get('/:id', (req, res) => {
