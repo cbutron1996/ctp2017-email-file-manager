@@ -102,23 +102,6 @@ function getMessage(req, res) {
   });
 }
 
-function getAttachment(req, res) {
-  gmail.users.messages.attachments.get({
-    access_token: req.user.accessToken,
-    userId: 'me',
-    id: req.params.aid,
-    messageId: req.params.id
-  }, function(err, response) {
-    if (err) {
-      res.json({ err });
-      return;
-    }
-    var data = response.data;
-    res.header("Content-Type", 'application/json');
-    res.send(JSON.stringify(data, null, '\t'));
-  });
-}
-
 router.get('/', (req, res) => {
   getMessages(req, res);
   Emails.findAll({
@@ -134,10 +117,6 @@ router.get('/', (req, res) => {
 
 router.get('/:id', (req, res) => {
   getMessage(req, res);
-});
-
-router.get('/:id/:aid', (req, res) => {
-  getAttachment(req, res);
 });
 
 
