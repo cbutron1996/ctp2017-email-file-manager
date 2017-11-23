@@ -37,7 +37,7 @@ function getMessagesFull(req, messages) {
 
         var body = response.snippet;
 
-        var num_attach = 0;
+        var num_attach = 1000;
         if(response.payload.parts) {
           num_attach = response.payload.parts.length-1;
         }
@@ -102,22 +102,6 @@ function getMessage(req, res) {
   });
 }
 
-function getAttachments(req, res) {
-  gmail.users.messages.get({
-    access_token: req.user.accessToken,
-    userId: 'me',
-    id: req.params.id
-  }, function(err, response) {
-    if (err) {
-      res.json(err);
-      return;
-    }
-    var parts = response.payload.parts[0].parts[0].body.data;
-    res.header("Content-Type", 'application/json');
-    res.send(JSON.stringify(parts, null, '\t'));
-  });
-}
-
 function getAttachment(req, res) {
   gmail.users.messages.attachments.get({
     access_token: req.user.accessToken,
@@ -129,8 +113,9 @@ function getAttachment(req, res) {
       res.json({ err });
       return;
     }
+    var data = response.data;
     res.header("Content-Type", 'application/json');
-    res.send(JSON.stringify(response, null, '\t'));
+    res.send(JSON.stringify(data, null, '\t'));
   });
 }
 
@@ -142,11 +127,7 @@ router.get('/:id', (req, res) => {
   getMessage(req, res);
 });
 
-router.get('/:id/attachments', (req, res) => {
-  getAttachments(req, res);
-});
-
-router.get('/:id/attachments/:aid', (req, res) => {
+router.get('/:id/:aid', (req, res) => {
   getAttachment(req, res);
 });
 

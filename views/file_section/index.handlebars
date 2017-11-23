@@ -5,9 +5,11 @@
     <thead>
       <tr>
         <th>Subject</th>
-        <th>From</th>
         <th>To</th>
+        <th>From</th>
+        <th>Body</th>
         <th>Date</th>
+        <th># of Attachments</th>
       </tr>
     </thead>
     <tbody>
@@ -20,9 +22,11 @@
       {{#each emails}}
         <tr>
           <td>{{this.subject}}</td>
-          <td>{{this.from}}</td>
           <td>{{this.to}}</td>
+          <td>{{this.from}}</td>
+          <td>{{this.body}}</td>
           <td>{{this.date}}</td>
+          <td>{{this.num_attach}}</td>
         </tr>
       {{/each}}
     </tbody>
