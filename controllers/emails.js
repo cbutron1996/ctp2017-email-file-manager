@@ -107,7 +107,7 @@ router.get('/', (req, res) => {
   Emails.findAll({
     where: { user_id: req.user.email }
   }).then((emails) => {
-      res.render('file_section', {
+      res.render('email_section', {
         user: req.user,
         emails: emails,
       })

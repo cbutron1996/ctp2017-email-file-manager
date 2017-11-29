@@ -1,0 +1,33 @@
+<head>
+  <link rel="stylesheet" type="text/css" href="/css/file_section.css">
+</head>
+  <table class="table table-responsive">
+    <thead>
+      <tr>
+        <th>Subject</th>
+        <th>To</th>
+        <th>From</th>
+        <th>Body</th>
+        <th>Date</th>
+        <th># of Attachments</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- example to create a row -->
+      <!-- <tr>
+        <td>Juldy</td>
+        <td>Dooley</td>
+        <td>july@example.com</td>
+      </tr> -->
+      {{#each emails}}
+        <tr>
+          <td>{{this.subject}}</td>
+          <td>{{this.to}}</td>
+          <td>{{this.from}}</td>
+          <td>{{this.body}}</td>
+          <td>{{this.date}}</td>
+          <td>{{this.num_attach}}</td>
+        </tr>
+      {{/each}}
+    </tbody>
+  </table>

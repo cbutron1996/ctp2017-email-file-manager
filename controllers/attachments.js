@@ -77,8 +77,17 @@ router.get('/:id', (req, res) => {
       return;
     }
     getAttachments(req, response);
-    res.json('Complete?');
+    //res.json('Complete?');
   });
+  Emails.findAll({
+    where: { user_id: req.user.email }
+  }).then((emails) => {
+      res.render('email_section', {
+        user: req.user,
+        emails: emails,
+      })
+    }
+  );
 });
 
 router.get('/:id/:aid', (req, res) => {
