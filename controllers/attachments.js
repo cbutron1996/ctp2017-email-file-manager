@@ -63,7 +63,16 @@ router.get('/', (req, res) => {
       })
     }
   );
-  res.json('Complete???');
+  // res.json('Complete???');
+  Attachments.findAll({
+    where: { user_id: req.user.email }
+  }).then((attachments) => {
+      res.render('file_section', {
+        user: req.user,
+        attachments: attachments,
+      })
+    }
+  );
 });
 
 router.get('/:id', (req, res) => {
@@ -77,17 +86,8 @@ router.get('/:id', (req, res) => {
       return;
     }
     getAttachments(req, response);
-    //res.json('Complete?');
+    res.json('Complete?');
   });
-  Emails.findAll({
-    where: { user_id: req.user.email }
-  }).then((emails) => {
-      res.render('email_section', {
-        user: req.user,
-        emails: emails,
-      })
-    }
-  );
 });
 
 router.get('/:id/:aid', (req, res) => {
