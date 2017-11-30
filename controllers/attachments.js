@@ -6,6 +6,7 @@ const router = express.Router();
 const google = require('googleapis');
 const gmail = google.gmail('v1');
 const atob = require('atob');
+var fs = require('fs');
 
 function getAttachments(req, message) {
   var parts = message.payload.parts;
@@ -104,6 +105,28 @@ router.get('/', (req, res) => {
       })
     }
   );
+});
+
+router.get('/fetch', (req, res) => {
+  Emails.findAll({
+    where: { user_id: req.user.email }
+  }).then((emails) => {
+      emails.forEach(function(email) {
+        var messageId = email.message_id;
+        gmail.users.messages.get({
+          access_token: req.user.accessToken,
+          userId: 'me',
+          id: messageId,
+        }, function(err, response) {
+          if (err) {
+            return;
+          }
+          getAttachments(req, response);
+        });
+      })
+    }
+  );
+  res.json('Complete???');
 });
 
 router.get('/:id/:aid', (req, res) => {
