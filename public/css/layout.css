@@ -19,7 +19,7 @@
 .search_box {
   background-color: white;
   border: 2px solid #ccc;
-  border-radius: 20%;
+  border-radius: 40px;
   height: 5%;
   background-image: url('/img/searchicon.png');
   background-position: 2% 50%;
