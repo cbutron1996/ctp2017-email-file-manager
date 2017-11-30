@@ -44,6 +44,36 @@ function getAttachments(req, message) {
   });
 }
 
+function sortByFileName(attachments) {
+  for(var i = 0; i < attachments.length; i++) {
+    for(var j = 0; j < attachments.length; j++) {
+      var attachment1 = attachments[i];
+      var attachment2 = attachments[j];
+      if(attachment1.file_name < attachment2.file_name) {
+        var temp = attachments[i];
+        attachments[i] = attachments[j];
+        attachments[j] = temp;
+      }
+    }
+  }
+  return attachments;
+}
+
+function sortByFileType(attachments) {
+  for(var i = 0; i < attachments.length; i++) {
+    for(var j = 0; j < attachments.length; j++) {
+      var attachment1 = attachments[i];
+      var attachment2 = attachments[j];
+      if(attachment1.file_type < attachment2.file_type) {
+        var temp = attachments[i];
+        attachments[i] = attachments[j];
+        attachments[j] = temp;
+      }
+    }
+  }
+  return attachments;
+}
+
 router.get('/', (req, res) => {
   Emails.findAll({
     where: { user_id: req.user.email }
@@ -67,27 +97,13 @@ router.get('/', (req, res) => {
   Attachments.findAll({
     where: { user_id: req.user.email }
   }).then((attachments) => {
+      attachments = sortByFileType(attachments);
       res.render('file_section', {
         user: req.user,
         attachments: attachments,
       })
     }
   );
-});
-
-router.get('/:id', (req, res) => {
-  gmail.users.messages.get({
-    access_token: req.user.accessToken,
-    userId: 'me',
-    id: req.params.id,
-  }, function(err, response) {
-    if (err) {
-      res.json(err);
-      return;
-    }
-    getAttachments(req, response);
-    res.json('Complete?');
-  });
 });
 
 router.get('/:id/:aid', (req, res) => {
