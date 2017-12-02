@@ -127,8 +127,29 @@ function getAttachment(req, res) {
   });
 }
 
+function getDownload(req, res) {
+  gmail.users.messages.attachments.get({
+    access_token: req.user.accessToken,
+    userId: 'me',
+    messageId: req.params.id,
+    id: req.params.aid,
+  }, function(err, response) {
+    if (err) {
+      res.json(err);
+      return;
+    }
+    res.header('filename', req.params.filename);
+    const dl = Buffer.from(response.data.toString('utf-8'), 'base64');
+    res.send(dl);
+  });
+}
+
 router.get('/:id/:aid/:filename', (req, res) => {
   getAttachment(req, res);
+});
+
+router.get('/:id/:aid/download/:filename', (req, res) => {
+  getDownload(req, res);
 });
 
 

@@ -4,7 +4,8 @@
   <table class="table table-responsive">
     <thead>
       <tr>
-        <th>File Name</th>
+        <th>Direct Download</th>
+        <th>File Preview</th>
         <th>File Type</th>
       </tr>
     </thead>
@@ -18,7 +19,12 @@
       {{#each attachments}}
         <tr>
           <td>
-            <a href="attachments/{{this.message_id}}/{{this.attachment_id}}/{{this.file_name}}">
+            <a href="attachments/{{this.message_id}}/{{this.attachment_id}}/download/{{this.file_name}}" target="_blank">
+              Direct Download
+            </a>
+          </td>
+          <td>
+            <a href="attachments/{{this.message_id}}/{{this.attachment_id}}/{{this.file_name}}" target="_blank">
               {{this.file_name}}
             </a>
           </td>

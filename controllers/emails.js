@@ -156,8 +156,10 @@ function getMessage(req, res) {
       res.json(err);
       return;
     }
-    res.header("Content-Type", 'application/json');
-    res.send(JSON.stringify(response, null, '\t'));
+    // res.header("Content-Type", 'application/json');
+    // res.send(JSON.stringify(response, null, '\t'));
+    const dl = Buffer.from(response.payload.parts[1].body.data.toString('utf-8'), 'base64');
+    res.end(dl);
   });
 }
 
