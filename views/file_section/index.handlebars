@@ -4,7 +4,6 @@
   <table class="table table-responsive">
     <thead>
       <tr>
-        <th>Link</th>
         <th>File Name</th>
         <th>File Type</th>
       </tr>
@@ -18,8 +17,11 @@
       </tr> -->
       {{#each attachments}}
         <tr>
-          <td><a href="attachments/{{this.message_id}}/{{this.attachment_id}}">Link</td>
-          <td>{{this.file_name}}</td>
+          <td>
+            <a href="attachments/{{this.message_id}}/{{this.attachment_id}}/{{this.file_name}}">
+              {{this.file_name}}
+            </a>
+          </td>
           <td>{{this.file_type}}</td>
         </tr>
       {{/each}}

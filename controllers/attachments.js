@@ -121,12 +121,13 @@ function getAttachment(req, res) {
       res.json(err);
       return;
     }
+    res.header('filename', req.params.filename);
     const dl = Buffer.from(response.data.toString('utf-8'), 'base64');
     res.end(dl);
   });
 }
 
-router.get('/:id/:aid', (req, res) => {
+router.get('/:id/:aid/:filename', (req, res) => {
   getAttachment(req, res);
 });
 
