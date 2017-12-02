@@ -6,7 +6,7 @@ const google = require('googleapis');
 const gmail = google.gmail('v1');
 const atob = require('atob');
 
-function getMessagesFull(req, messages) {
+function getMessages2(req, messages) {
   messages.forEach(function(message) {
     gmail.users.messages.get({
       access_token: req.user.accessToken,
@@ -37,9 +37,12 @@ function getMessagesFull(req, messages) {
 
         var body = response.snippet;
 
-        var num_attach = 1000;
+        var num_attach = 0;
         if(response.payload.parts) {
-          num_attach = response.payload.parts.length-1;
+          response.payload.parts.forEach(function(part) {
+            if(part.filename && part.filename.length > 0)
+              num_attach++;
+          })
         }
 
         if(email) {
@@ -70,6 +73,60 @@ function getMessagesFull(req, messages) {
   });
 }
 
+function updateMessages(req) {
+  Emails.findAll({
+    where: { user_id: req.user.email }
+  }).then((emails) => {
+      emails.forEach(function(email) {
+        messageId = email.message_id;
+        gmail.users.messages.get({
+          access_token: req.user.accessToken,
+          userId: 'me',
+          id: messageId,
+        }, function(err, response) {
+          if (err) return;
+          var headers = response.payload.headers;
+          var subject = headers.find(function(element) {
+            return element.name === "Subject";
+          });
+          var to = headers.find(function(element) {
+            return element.name === "To";
+          });
+          var from = headers.find(function(element) {
+            return element.name === "From";
+          });
+          var date = headers.find(function(element) {
+            return element.name === "Date";
+          });
+
+          var body = response.snippet;
+
+          var num_attach = 0;
+          if(response.payload.parts) {
+            response.payload.parts.forEach(function(part) {
+              if(part.filename && part.filename.length > 0)
+                num_attach++;
+            })
+          }
+
+          if(email) {
+            email.updateAttributes({
+              message_id: response.id,
+              subject: subject.value,
+              to: to.value,
+              from: from.value,
+              date: date.value,
+              body: body,
+              num_attach: num_attach,
+              user_id: req.user.email,
+            });
+          }
+        });
+      });
+    }
+  );
+}
+
 function getMessages(req, res) {
   var request = gmail.users.messages.list({
     access_token: req.user.accessToken,
@@ -81,9 +138,8 @@ function getMessages(req, res) {
       return;
     }
     var messages = response.messages;
-    getMessagesFull(req, messages);
-    // res.header("Content-Type", 'application/json');
-    // res.send(JSON.stringify(response, null, '\t'));
+    getMessages2(req, messages);
+    res.json("Complete");
   });
 }
 
@@ -103,7 +159,7 @@ function getMessage(req, res) {
 }
 
 router.get('/', (req, res) => {
-  getMessages(req, res);
+  updateMessages(req);
   Emails.findAll({
     where: { user_id: req.user.email }
   }).then((emails) => {
@@ -113,6 +169,10 @@ router.get('/', (req, res) => {
       })
     }
   );
+});
+
+router.get('/fetch', (req, res) => {
+  getMessages(req, res);
 });
 
 router.get('/:id', (req, res) => {
