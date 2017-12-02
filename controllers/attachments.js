@@ -110,7 +110,7 @@ router.get('/fetch', (req, res) => {
   res.json('Complete???');
 });
 
-router.get('/:id/:aid', (req, res) => {
+function getAttachment(req, res) {
   gmail.users.messages.attachments.get({
     access_token: req.user.accessToken,
     userId: 'me',
@@ -121,8 +121,13 @@ router.get('/:id/:aid', (req, res) => {
       res.json(err);
       return;
     }
-    res.json(response);
+    const dl = Buffer.from(response.data.toString('utf-8'), 'base64');
+    res.end(dl);
   });
+}
+
+router.get('/:id/:aid', (req, res) => {
+  getAttachment(req, res);
 });
 
 

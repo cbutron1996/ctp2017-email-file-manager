@@ -4,7 +4,7 @@
   <table class="table table-responsive">
     <thead>
       <tr>
-        <th>User ID</th>
+        <th>Link</th>
         <th>File Name</th>
         <th>File Type</th>
       </tr>
@@ -18,7 +18,7 @@
       </tr> -->
       {{#each attachments}}
         <tr>
-          <td>{{this.user_id}}</td>
+          <td><a href="attachments/{{this.message_id}}/{{this.attachment_id}}">Link</td>
           <td>{{this.file_name}}</td>
           <td>{{this.file_type}}</td>
         </tr>

@@ -132,12 +132,15 @@ function getMessages(req, res) {
     access_token: req.user.accessToken,
     userId: 'me',
     labelIds: ['INBOX'],
+    maxResults: 500,
+    // pageToken: pageToken,
   }, function(err, response) {
     if (err) {
       res.json(err);
       return;
     }
     var messages = response.messages;
+    var nextPageToken = response.nextPageToken;
     getMessages2(req, messages);
     res.json("Complete");
   });
