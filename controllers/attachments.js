@@ -27,7 +27,7 @@ function getAttachments(req, message) {
             user_id: req.user.email,
             attachment_id: attachId,
             file_name: part.filename,
-            file_type: part.mimeType,
+            file_type: part.mimeType.substr(part.mimeType.indexOf("/")+1),
             part_index: part.partId,
           });
         } else {
@@ -36,7 +36,7 @@ function getAttachments(req, message) {
             user_id: req.user.email,
             attachment_id: attachId,
             file_name: part.filename,
-            file_type: part.mimeType,
+            file_type: part.mimeType.substr(part.mimeType.indexOf("/")+1),
             part_index: part.partId,
           });
         }
@@ -99,15 +99,12 @@ router.get('/fetch', (req, res) => {
           userId: 'me',
           id: messageId,
         }, function(err, response) {
-          if (err) {
-            return;
-          }
+          if (err) return;
           getAttachments(req, response);
         });
       })
     }
   );
-  res.json('Complete???');
 });
 
 function getAttachment(req, res) {
