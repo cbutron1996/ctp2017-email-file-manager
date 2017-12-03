@@ -156,17 +156,30 @@ function getMessage(req, res) {
       res.json(err);
       return;
     }
-    // res.header("Content-Type", 'application/json');
-    // res.send(JSON.stringify(response, null, '\t'));
-    const dl = Buffer.from(response.payload.parts[1].body.data.toString('utf-8'), 'base64');
-    res.end(dl);
+    // const dl = Buffer.from(response.payload.parts[1].parts[0].body.data.toString('utf-8'), 'base64');
+    // res.end(dl);
+    res.header("Content-Type", 'application/json');
+    res.send(JSON.stringify(response, null, '\t'));
   });
 }
 
 router.get('/', (req, res) => {
+  if(req.query.search == null || req.query.search == '$ALL') {
+    res.redirect('/emails?search=');
+    return;
+  }
   updateMessages(req);
   Emails.findAll({
-    where: { user_id: req.user.email }
+    where: {
+      user_id: req.user.email,
+      $or: [
+        {  subject: { $like: '%' + req.query.search + '%', }, },
+        {  to: { $like: '%' + req.query.search + '%', }, },
+        {  from: { $like: '%' + req.query.search + '%', }, },
+        {  body: { $like: '%' + req.query.search + '%', }, },
+        {  date: { $like: '%' + req.query.search + '%', }, },
+      ],
+    }
   }).then((emails) => {
       res.render('email_section', {
         user: req.user,

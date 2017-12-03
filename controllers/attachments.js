@@ -45,68 +45,6 @@ function getAttachments(req, message) {
   });
 }
 
-function sortByFileName(attachments) {
-  for(var i = 0; i < attachments.length; i++) {
-    for(var j = 0; j < attachments.length; j++) {
-      var attachment1 = attachments[i];
-      var attachment2 = attachments[j];
-      if(attachment1.file_name < attachment2.file_name) {
-        var temp = attachments[i];
-        attachments[i] = attachments[j];
-        attachments[j] = temp;
-      }
-    }
-  }
-  return attachments;
-}
-
-function sortByFileType(attachments) {
-  for(var i = 0; i < attachments.length; i++) {
-    for(var j = 0; j < attachments.length; j++) {
-      var attachment1 = attachments[i];
-      var attachment2 = attachments[j];
-      if(attachment1.file_type < attachment2.file_type) {
-        var temp = attachments[i];
-        attachments[i] = attachments[j];
-        attachments[j] = temp;
-      }
-    }
-  }
-  return attachments;
-}
-
-router.get('/', (req, res) => {
-  Attachments.findAll({
-    where: { user_id: req.user.email }
-  }).then((attachments) => {
-      attachments = sortByFileType(attachments);
-      res.render('file_section', {
-        user: req.user,
-        attachments: attachments,
-      })
-    }
-  );
-});
-
-router.get('/fetch', (req, res) => {
-  Emails.findAll({
-    where: { user_id: req.user.email }
-  }).then((emails) => {
-      emails.forEach(function(email) {
-        var messageId = email.message_id;
-        gmail.users.messages.get({
-          access_token: req.user.accessToken,
-          userId: 'me',
-          id: messageId,
-        }, function(err, response) {
-          if (err) return;
-          getAttachments(req, response);
-        });
-      })
-    }
-  );
-});
-
 function getAttachment(req, res) {
   gmail.users.messages.attachments.get({
     access_token: req.user.accessToken,
@@ -140,6 +78,78 @@ function getDownload(req, res) {
     res.send(dl);
   });
 }
+
+function sortByFileName(attachments) {
+  for(var i = 0; i < attachments.length; i++) {
+    for(var j = 0; j < attachments.length; j++) {
+      var attachment1 = attachments[i];
+      var attachment2 = attachments[j];
+      if(attachment1.file_name < attachment2.file_name) {
+        var temp = attachments[i];
+        attachments[i] = attachments[j];
+        attachments[j] = temp;
+      }
+    }
+  }
+  return attachments;
+}
+
+function sortByFileType(attachments) {
+  for(var i = 0; i < attachments.length; i++) {
+    for(var j = 0; j < attachments.length; j++) {
+      var attachment1 = attachments[i];
+      var attachment2 = attachments[j];
+      if(attachment1.file_type < attachment2.file_type) {
+        var temp = attachments[i];
+        attachments[i] = attachments[j];
+        attachments[j] = temp;
+      }
+    }
+  }
+  return attachments;
+}
+
+router.get('/', (req, res) => {
+  if(req.query.search == null || req.query.search == '$ALL') {
+    res.redirect('/attachments?search=');
+    return;
+  }
+  Attachments.findAll({
+    where: {
+      user_id: req.user.email,
+      $or: [
+        {  file_name: { $like: '%' + req.query.search + '%', }, },
+        {  file_type: { $like: '%' + req.query.search + '%', }, },
+      ],
+    }
+  }).then((attachments) => {
+      attachments = sortByFileType(attachments);
+      res.render('file_section', {
+        user: req.user,
+        attachments: attachments,
+      })
+    }
+  );
+});
+
+router.get('/fetch', (req, res) => {
+  Emails.findAll({
+    where: { user_id: req.user.email }
+  }).then((emails) => {
+      emails.forEach(function(email) {
+        var messageId = email.message_id;
+        gmail.users.messages.get({
+          access_token: req.user.accessToken,
+          userId: 'me',
+          id: messageId,
+        }, function(err, response) {
+          if (err) return;
+          getAttachments(req, response);
+        });
+      })
+    }
+  );
+});
 
 router.get('/:id/:aid/:filename', (req, res) => {
   getAttachment(req, res);
