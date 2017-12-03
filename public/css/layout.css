@@ -1,3 +1,9 @@
+table {
+  table-layout: auto;
+  width: 100%;
+  word-break: keep-all;
+}
+
 .small_log {
   height: 15%;
 }

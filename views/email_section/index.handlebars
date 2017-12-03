@@ -5,12 +5,11 @@
     <thead>
       <tr>
         <th>Link</th>
-        <th>Subject</th>
-        <th>To</th>
         <th>From</th>
-        <th>Body</th>
+        <th>Subject</th>
+        <!-- <th>Body</th> -->
         <th>Date</th>
-        <th># of Attachments</th>
+        <th>Files</th>
       </tr>
     </thead>
     <tbody>
@@ -23,10 +22,9 @@
       {{#each emails}}
         <tr>
           <td><a href="emails/{{this.message_id}}">Link</td>
-          <td>{{this.subject}}</td>
-          <td>{{this.to}}</td>
           <td>{{this.from}}</td>
-          <td>{{this.body}}</td>
+          <td>{{this.subject}}</td>
+          <!-- <td>{{this.body}}</td> -->
           <td>{{this.date}}</td>
           <td>{{this.num_attach}}</td>
         </tr>

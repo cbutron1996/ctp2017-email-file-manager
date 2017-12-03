@@ -6,6 +6,22 @@ const google = require('googleapis');
 const gmail = google.gmail('v1');
 const atob = require('atob');
 
+function formatDate(date) {
+  date = new Date(date);
+  var monthNames = [
+    "Jan", "Feb", "Mar",
+    "Apr", "May", "June", "July",
+    "Aug", "Sep", "Oct",
+    "Nov", "Dec"
+  ];
+
+  var day = date.getDate();
+  var monthIndex = date.getMonth();
+  var year = date.getFullYear();
+
+  return day + ' ' + monthNames[monthIndex] + ' ' + year;
+}
+
 function getMessages2(req, messages) {
   messages.forEach(function(message) {
     gmail.users.messages.get({
@@ -51,7 +67,7 @@ function getMessages2(req, messages) {
             subject: subject.value,
             to: to.value,
             from: from.value,
-            date: date.value,
+            date: formatDate(date.value),
             body: body,
             num_attach: num_attach,
             user_id: req.user.email,
@@ -62,7 +78,7 @@ function getMessages2(req, messages) {
             subject: subject.value,
             to: to.value,
             from: from.value,
-            date: date.value,
+            date: formatDate(date.value),
             body: body,
             num_attach: num_attach,
             user_id: req.user.email,
@@ -115,7 +131,7 @@ function updateMessages(req) {
               subject: subject.value,
               to: to.value,
               from: from.value,
-              date: date.value,
+              date: formatDate(date.value),
               body: body,
               num_attach: num_attach,
               user_id: req.user.email,
@@ -168,7 +184,6 @@ router.get('/', (req, res) => {
     res.redirect('/emails?search=');
     return;
   }
-  updateMessages(req);
   Emails.findAll({
     where: {
       user_id: req.user.email,
@@ -190,6 +205,7 @@ router.get('/', (req, res) => {
 });
 
 router.get('/fetch', (req, res) => {
+  updateMessages(req);
   getMessages(req, res);
 });
 
