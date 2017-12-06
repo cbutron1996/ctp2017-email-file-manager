@@ -51,6 +51,10 @@ app.set('view engine', 'handlebars');
 app.set('views', `${__dirname}/views/`);
 
 
+// React Views
+// app.set('views', __dirname + '/views_react');
+// app.set('view engine', 'jsx');
+// app.engine('jsx', require('express-react-views').createEngine());
 
 // Load up all of the controllers
 const controllers = require('./controllers');

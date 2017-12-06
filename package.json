@@ -18,6 +18,7 @@
     "body-parser": "^1.18.2",
     "express": "^4.16.1",
     "express-handlebars": "^3.0.0",
+    "express-react-views": "^0.10.4",
     "express-session": "^1.15.6",
     "googleapis": "^22.2.0",
     "nodemon": "^1.12.1",
@@ -26,6 +27,8 @@
     "passport-local": "^1.0.0",
     "pg": "^7.3.0",
     "pg-hstore": "^2.3.2",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
     "sequelize": "^4.13.3",
     "sequelize-cli": "^3.0.0"
   }
