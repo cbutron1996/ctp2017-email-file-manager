@@ -4,7 +4,6 @@
   <table class="table table-responsive">
     <thead>
       <tr>
-        <th>Link</th>
         <th>From</th>
         <th>Subject</th>
         <!-- <th>Body</th> -->
@@ -21,12 +20,11 @@
       </tr> -->
       {{#each emails}}
         <tr>
-          <td><a href="emails/{{this.message_id}}">Link</td>
           <td>{{this.from}}</td>
           <td>{{this.subject}}</td>
           <!-- <td>{{this.body}}</td> -->
           <td>{{this.date}}</td>
-          <td>{{this.num_attach}}</td>
+          <td><a href="attachments?search={{this.message_id}}">{{this.num_attach}}</a></td>
         </tr>
       {{/each}}
     </tbody>

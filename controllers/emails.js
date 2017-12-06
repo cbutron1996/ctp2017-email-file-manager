@@ -143,7 +143,7 @@ function updateMessages(req) {
   );
 }
 
-function getMessages(req, res) {
+function getMessages(req) {
   var request = gmail.users.messages.list({
     access_token: req.user.accessToken,
     userId: 'me',
@@ -158,7 +158,6 @@ function getMessages(req, res) {
     var messages = response.messages;
     var nextPageToken = response.nextPageToken;
     getMessages2(req, messages);
-    res.json("Complete");
   });
 }
 
@@ -184,6 +183,9 @@ router.get('/', (req, res) => {
     res.redirect('/emails?search=');
     return;
   }
+
+  updateMessages(req);
+
   Emails.findAll({
     where: {
       user_id: req.user.email,
@@ -193,6 +195,7 @@ router.get('/', (req, res) => {
         {  from: { $like: '%' + req.query.search + '%', }, },
         {  body: { $like: '%' + req.query.search + '%', }, },
         {  date: { $like: '%' + req.query.search + '%', }, },
+        {  message_id: { $like: '%' + req.query.search + '%', }, },
       ],
     }
   }).then((emails) => {
@@ -206,7 +209,8 @@ router.get('/', (req, res) => {
 
 router.get('/fetch', (req, res) => {
   updateMessages(req);
-  getMessages(req, res);
+  getMessages(req);
+  res.json("Complete???");
 });
 
 router.get('/:id', (req, res) => {

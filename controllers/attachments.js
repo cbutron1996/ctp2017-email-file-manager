@@ -5,11 +5,13 @@ const Attachments = models.Attachments;
 const router = express.Router();
 const google = require('googleapis');
 const gmail = google.gmail('v1');
-const atob = require('atob');
-const fs = require('fs');
 
 function getAttachments(req, message) {
   var parts = message.payload.parts;
+  var headers = message.payload.headers;
+  var date = headers.find(function(element) {
+    return element.name === "Date";
+  });
   if(!parts) return;
   parts.forEach(function(part) {
     if(part.filename && part.filename.length > 0) {
@@ -110,24 +112,47 @@ function sortByFileType(attachments) {
 }
 
 router.get('/', (req, res) => {
-  if(req.query.search == null || req.query.search == '$ALL') {
+  if(req.query.search == null) {
     res.redirect('/attachments?search=');
     return;
   }
+
+  Emails.findAll({
+    where: { user_id: req.user.email }
+  }).then((emails) => {
+      emails.forEach(function(email) {
+        var messageId = email.message_id;
+        gmail.users.messages.get({
+          access_token: req.user.accessToken,
+          userId: 'me',
+          id: messageId,
+        }, function(err, response) {
+          if (err) return;
+          getAttachments(req, response);
+        });
+      })
+    }
+  );
+
   Attachments.findAll({
     where: {
       user_id: req.user.email,
       $or: [
+        {  message_id: { $like: '%' + req.query.search + '%', }, },
         {  file_name: { $like: '%' + req.query.search + '%', }, },
         {  file_type: { $like: '%' + req.query.search + '%', }, },
       ],
     }
   }).then((attachments) => {
-      attachments = sortByFileType(attachments);
+      // if(req.query.sort == "file_type") {
+      //   attachments = sortByFileType(attachments);
+      // } else if(req.query.sort == "file_name") {
+      //   attachments = sortByFileName(attachments);
+      // }
       res.render('file_section', {
         user: req.user,
         attachments: attachments,
-      })
+      });
     }
   );
 });
@@ -149,6 +174,7 @@ router.get('/fetch', (req, res) => {
       })
     }
   );
+  res.json("Complete");
 });
 
 router.get('/:id/:aid/:filename', (req, res) => {
