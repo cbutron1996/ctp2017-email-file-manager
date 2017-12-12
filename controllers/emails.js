@@ -22,6 +22,38 @@ function formatDate(date) {
   return day + ' ' + monthNames[monthIndex] + ' ' + year;
 }
 
+function listMessages(req, res) {
+  var getPageOfMessages = function(response) {
+    var messages = response.messages;
+    getMessages2(req, messages)
+    var nextPageToken = response.nextPageToken;
+    if(nextPageToken) {
+      var request = gmail.users.messages.list({
+        access_token: req.user.accessToken,
+        userId: 'me',
+        // q: query,
+        labelIds: ['INBOX'],
+        maxResults: 500,
+      }, function(err, response) {
+        if (err) return;
+        getPageOfMessages(response);
+      });
+    } else {
+      return;
+    }
+  };
+  var initialRequest = gmail.users.messages.list({
+    access_token: req.user.accessToken,
+    userId: 'me',
+    // q: query,
+    labelIds: ['INBOX'],
+    maxResults: 500,
+  }, function(err, response) {
+    if (err) return;
+    getPageOfMessages(response);
+  });
+}
+
 function getMessages2(req, messages) {
   messages.forEach(function(message) {
     gmail.users.messages.get({
@@ -178,37 +210,96 @@ function getMessage(req, res) {
 }
 
 router.get('/', (req, res) => {
-  if(req.query.search == null || req.query.search == '$ALL') {
+  if(req.query.search == null) {
     res.redirect('/emails?search=');
     return;
   }
-  getMessages(req);
-  updateMessages(req);
+  // getMessages(req);
+  // updateMessages(req);
+  listMessages(req);
 
-  Emails.findAll({
-    where: {
-      user_id: req.user.email,
-      $or: [
-        {  subject: { $like: '%' + req.query.search + '%', }, },
-        {  to: { $like: '%' + req.query.search + '%', }, },
-        {  from: { $like: '%' + req.query.search + '%', }, },
-        {  body: { $like: '%' + req.query.search + '%', }, },
-        {  date: { $like: '%' + req.query.search + '%', }, },
-        {  message_id: { $like: '%' + req.query.search + '%', }, },
+  let limit = 25;
+  let offset = 0;
+  Emails.findAndCountAll().then(data => {
+    let page = 1;
+    let pages = Math.ceil(data.count / limit);
+    offset = limit * (page - 1);
+    Emails.findAll({
+      where: {
+        user_id: req.user.email,
+        $or: [
+          {  subject: { $like: '%' + req.query.search + '%', }, },
+          {  to: { $like: '%' + req.query.search + '%', }, },
+          {  from: { $like: '%' + req.query.search + '%', }, },
+          {  body: { $like: '%' + req.query.search + '%', }, },
+          {  date: { $like: '%' + req.query.search + '%', }, },
+          {  message_id: { $like: '%' + req.query.search + '%', }, },
+        ],
+      },
+      order: [
+        ['date', 'ASC'],
+        ['from', 'ASC'],
+        ['subject', 'ASC'],
+        ['num_attach', 'DESC'],
       ],
-    }
-  }).then((emails) => {
+      limit: limit,
+      offset: offset,
+    }).then(emails => {
       res.render('email_section', {
         user: req.user,
         emails: emails,
-      })
-    }
-  );
+      });
+    });
+  });
+});
+
+router.get('/:page', (req, res) => {
+  if(req.query.search == null) {
+    res.redirect('/emails/1?search=');
+    return;
+  }
+  // getMessages(req);
+  // updateMessages(req);
+  listMessages(req);
+
+  let limit = 25;
+  let offset = 0;
+  Emails.findAndCountAll().then(data => {
+    let page = req.params.page;
+    let pages = Math.ceil(data.count / limit);
+    offset = limit * (page - 1);
+    Emails.findAll({
+      where: {
+        user_id: req.user.email,
+        $or: [
+          {  subject: { $like: '%' + req.query.search + '%', }, },
+          {  to: { $like: '%' + req.query.search + '%', }, },
+          {  from: { $like: '%' + req.query.search + '%', }, },
+          {  body: { $like: '%' + req.query.search + '%', }, },
+          {  date: { $like: '%' + req.query.search + '%', }, },
+          {  message_id: { $like: '%' + req.query.search + '%', }, },
+        ],
+      },
+      order: [
+        ['date', 'ASC'],
+        ['from', 'ASC'],
+        ['subject', 'ASC'],
+        ['num_attach', 'DESC'],
+      ],
+      limit: limit,
+      offset: offset,
+    }).then(emails => {
+      res.render('email_section', {
+        user: req.user,
+        emails: emails,
+      });
+    });
+  });
 });
 
 router.get('/fetch', (req, res) => {
-  updateMessages(req);
   getMessages(req);
+  updateMessages(req);
   res.json("Complete???");
 });
 

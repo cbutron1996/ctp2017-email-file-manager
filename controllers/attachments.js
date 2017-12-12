@@ -6,6 +6,25 @@ const router = express.Router();
 const google = require('googleapis');
 const gmail = google.gmail('v1');
 
+function getAllAttachments(req) {
+  Emails.findAll({
+    where: { user_id: req.user.email }
+  }).then((emails) => {
+      emails.forEach(function(email) {
+        var messageId = email.message_id;
+        gmail.users.messages.get({
+          access_token: req.user.accessToken,
+          userId: 'me',
+          id: messageId,
+        }, function(err, response) {
+          if (err) return;
+          getAttachments(req, response);
+        });
+      })
+    }
+  );
+}
+
 function getAttachments(req, message) {
   var parts = message.payload.parts;
   var headers = message.payload.headers;
@@ -81,99 +100,122 @@ function getDownload(req, res) {
   });
 }
 
-function sortByFileName(attachments) {
-  for(var i = 0; i < attachments.length; i++) {
-    for(var j = 0; j < attachments.length; j++) {
-      var attachment1 = attachments[i];
-      var attachment2 = attachments[j];
-      if(attachment1.file_name < attachment2.file_name) {
-        var temp = attachments[i];
-        attachments[i] = attachments[j];
-        attachments[j] = temp;
-      }
-    }
-  }
-  return attachments;
-}
-
-function sortByFileType(attachments) {
-  for(var i = 0; i < attachments.length; i++) {
-    for(var j = 0; j < attachments.length; j++) {
-      var attachment1 = attachments[i];
-      var attachment2 = attachments[j];
-      if(attachment1.file_type < attachment2.file_type) {
-        var temp = attachments[i];
-        attachments[i] = attachments[j];
-        attachments[j] = temp;
-      }
-    }
-  }
-  return attachments;
-}
-
 router.get('/', (req, res) => {
   if(req.query.search == null) {
     res.redirect('/attachments?search=');
     return;
   }
+  getAllAttachments(req);
 
-  Emails.findAll({
-    where: { user_id: req.user.email }
-  }).then((emails) => {
-      emails.forEach(function(email) {
-        var messageId = email.message_id;
-        gmail.users.messages.get({
-          access_token: req.user.accessToken,
-          userId: 'me',
-          id: messageId,
-        }, function(err, response) {
-          if (err) return;
-          getAttachments(req, response);
-        });
-      })
-    }
-  );
-
-  Attachments.findAll({
-    where: {
-      user_id: req.user.email,
-      $or: [
-        {  message_id: { $like: '%' + req.query.search + '%', }, },
-        {  file_name: { $like: '%' + req.query.search + '%', }, },
-        {  file_type: { $like: '%' + req.query.search + '%', }, },
+  let limit = 25;
+  let offset = 0;
+  Attachments.findAndCountAll().then(data => {
+    let page = 1;
+    let pages = Math.ceil(data.count / limit);
+    offset = limit * (page - 1);
+    Attachments.findAll({
+      where: {
+        user_id: req.user.email,
+        $or: [
+          {  message_id: { $like: '%' + req.query.search + '%', }, },
+          {  file_name: { $like: '%' + req.query.search + '%', }, },
+          {  file_type: { $like: '%' + req.query.search + '%', }, },
+        ],
+      },
+      order: [
+        ['file_type', 'ASC'],
+        ['file_name', 'ASC'],
       ],
-    }
-  }).then((attachments) => {
-      // if(req.query.sort == "file_type") {
-      //   attachments = sortByFileType(attachments);
-      // } else if(req.query.sort == "file_name") {
-      //   attachments = sortByFileName(attachments);
-      // }
+      limit: limit,
+      offset: offset,
+    }).then((attachments) => {
       res.render('file_section', {
         user: req.user,
         attachments: attachments,
       });
-    }
-  );
+    });
+  });
+
+  // Attachments.findAll({
+  //   where: {
+  //     user_id: req.user.email,
+  //     $or: [
+  //       {  message_id: { $like: '%' + req.query.search + '%', }, },
+  //       {  file_name: { $like: '%' + req.query.search + '%', }, },
+  //       {  file_type: { $like: '%' + req.query.search + '%', }, },
+  //     ],
+  //   },
+  //   order: [
+  //     ['file_type', 'ASC'],
+  //     ['file_name', 'ASC'],
+  //   ],
+  // }).then((attachments) => {
+  //   res.render('file_section', {
+  //     user: req.user,
+  //     attachments: attachments,
+  //   });
+  // });
+});
+
+router.get('/:page', (req, res) => {
+  if(req.query.search == null) {
+    res.redirect('/attachments/1?search=');
+    return;
+  }
+  getAllAttachments(req);
+
+  let limit = 25;
+  let offset = 0;
+  Attachments.findAndCountAll().then(data => {
+    let page = req.params.page;
+    let pages = Math.ceil(data.count / limit);
+    offset = limit * (page - 1);
+    Attachments.findAll({
+      where: {
+        user_id: req.user.email,
+        $or: [
+          {  message_id: { $like: '%' + req.query.search + '%', }, },
+          {  file_name: { $like: '%' + req.query.search + '%', }, },
+          {  file_type: { $like: '%' + req.query.search + '%', }, },
+        ],
+      },
+      order: [
+        ['file_type', 'ASC'],
+        ['file_name', 'ASC'],
+      ],
+      limit: limit,
+      offset: offset,
+    }).then((attachments) => {
+      res.render('file_section', {
+        user: req.user,
+        attachments: attachments,
+      });
+    });
+  });
+
+  // Attachments.findAll({
+  //   where: {
+  //     user_id: req.user.email,
+  //     $or: [
+  //       {  message_id: { $like: '%' + req.query.search + '%', }, },
+  //       {  file_name: { $like: '%' + req.query.search + '%', }, },
+  //       {  file_type: { $like: '%' + req.query.search + '%', }, },
+  //     ],
+  //   },
+  //   order: [
+  //     ['file_type', 'ASC'],
+  //     ['file_name', 'ASC'],
+  //   ],
+  // }).then((attachments) => {
+  //   res.render('file_section', {
+  //     user: req.user,
+  //     attachments: attachments,
+  //   });
+  // });
 });
 
 router.get('/fetch', (req, res) => {
-  Emails.findAll({
-    where: { user_id: req.user.email }
-  }).then((emails) => {
-      emails.forEach(function(email) {
-        var messageId = email.message_id;
-        gmail.users.messages.get({
-          access_token: req.user.accessToken,
-          userId: 'me',
-          id: messageId,
-        }, function(err, response) {
-          if (err) return;
-          getAttachments(req, response);
-        });
-      })
-    }
-  );
+  getAllAttachments(req);
   res.json("Complete");
 });
 
