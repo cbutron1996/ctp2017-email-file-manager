@@ -152,7 +152,6 @@ function getMessages(req) {
     // pageToken: pageToken,
   }, function(err, response) {
     if (err) {
-      res.json(err);
       return;
     }
     var messages = response.messages;
@@ -183,7 +182,7 @@ router.get('/', (req, res) => {
     res.redirect('/emails?search=');
     return;
   }
-
+  getMessages(req);
   updateMessages(req);
 
   Emails.findAll({

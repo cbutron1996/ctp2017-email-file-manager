@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
   //     })
   //   }
   // );
-  res.render('home');
+  res.render('login', {layout: 'loginLayout.handlebars'});
 });
 
 
