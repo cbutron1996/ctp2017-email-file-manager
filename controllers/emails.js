@@ -22,7 +22,7 @@ function formatDate(date) {
   return day + ' ' + monthNames[monthIndex] + ' ' + year;
 }
 
-function listMessages(req, res) {
+function listMessages(req) {
   var getPageOfMessages = function(response) {
     var messages = response.messages;
     getMessages2(req, messages)
@@ -35,7 +35,9 @@ function listMessages(req, res) {
         labelIds: ['INBOX'],
         maxResults: 500,
       }, function(err, response) {
-        if (err) return;
+        if (err) {
+          return;
+        }
         getPageOfMessages(response);
       });
     } else {
@@ -221,7 +223,21 @@ router.get('/', (req, res) => {
   let limit = 25;
   let offset = 0;
   let pages = 0;
-  Emails.findAndCountAll().then(data => {
+  let count = 0;
+  Emails.findAndCountAll({
+    where: {
+      user_id: req.user.email,
+      $or: [
+        {  subject: { $like: '%' + req.query.search + '%', }, },
+        {  to: { $like: '%' + req.query.search + '%', }, },
+        {  from: { $like: '%' + req.query.search + '%', }, },
+        {  body: { $like: '%' + req.query.search + '%', }, },
+        {  date: { $like: '%' + req.query.search + '%', }, },
+        {  message_id: { $like: '%' + req.query.search + '%', }, },
+      ],
+    },
+  }).then(data => {
+    count = data.count;
     let page = 1;
     pages = Math.ceil(data.count / limit);
     offset = limit * (page - 1);
@@ -246,30 +262,48 @@ router.get('/', (req, res) => {
       limit: limit,
       offset: offset,
     }).then(emails => {
+      var threshold = offset+emails.length;
       res.render('email_section', {
         user: req.user,
         emails: emails,
-        page: 2,
+        prevPage: 0,
+        nextPage: 2,
         search: req.query.search,
-        totalPages: pages,
+        count: count,
+        offset: offset+1,
+        threshold: threshold,
       });
     });
   });
 });
 
 router.get('/:page', (req, res) => {
-  if(req.query.search == null) {
+  if(req.params.page == 0) {
     res.redirect('/emails/1?search=');
     return;
   }
   // getMessages(req);
   // updateMessages(req);
-  listMessages(req);
+  // listMessages(req);
 
   let limit = 25;
   let offset = 0;
   let pages = 0;
-  Emails.findAndCountAll().then(data => {
+  let count = 0;
+  Emails.findAndCountAll({
+    where: {
+      user_id: req.user.email,
+      $or: [
+        {  subject: { $like: '%' + req.query.search + '%', }, },
+        {  to: { $like: '%' + req.query.search + '%', }, },
+        {  from: { $like: '%' + req.query.search + '%', }, },
+        {  body: { $like: '%' + req.query.search + '%', }, },
+        {  date: { $like: '%' + req.query.search + '%', }, },
+        {  message_id: { $like: '%' + req.query.search + '%', }, },
+      ],
+    },
+  }).then(data => {
+    count = data.count;
     let page = req.params.page;
     pages = Math.ceil(data.count / limit);
     offset = limit * (page - 1);
@@ -295,21 +329,25 @@ router.get('/:page', (req, res) => {
       offset: offset,
     }).then(emails => {
       var p = parseInt(req.params.page);
+      var threshold = offset+emails.length;
       res.render('email_section', {
         user: req.user,
         emails: emails,
-        page: p+1,
+        prevPage: p-1,
+        nextPage: p+1,
         search: req.query.search,
-        totalPages: pages,
+        count: count,
+        offset: offset+1,
+        threshold: threshold,
       });
     });
   });
 });
 
 router.get('/fetch', (req, res) => {
-  getMessages(req);
-  updateMessages(req);
-  res.json("Complete???");
+  // listMessages(req);
+  // updateMessages(req);
+  res.json("Complete");
 });
 
 router.get('/:id', (req, res) => {

@@ -1,7 +1,10 @@
 <head>
   <link rel="stylesheet" type="text/css" href="/css/file_section.css">
+  <link href="https://cdn.rawgit.com/westonganger/bootstrap-directional-buttons/master/dist/bootstrap-directional-buttons.css" rel="stylesheet" type="text/css" />
 </head>
-  <a href="http://localhost:8000/attachments/{{this.page}}?search={{this.search}}">Page {{this.page}}</a>
+<a class="btn btn-xs btn-primary btn-arrow-left" href="http://localhost:8000/attachments/{{this.prevPage}}?search={{this.search}}"><</a>
+<div class="btn btn-xs btn-link">{{this.offset}}-{{this.threshold}} of {{this.count}}</div>
+<a class="btn btn-xs btn-primary btn-arrow-right" href="http://localhost:8000/attachments/{{this.nextPage}}?search={{this.search}}">></a>
   <table class="table table-responsive">
     <thead>
       <tr>
@@ -24,16 +27,16 @@
             <img src="/img/512px/{{this.file_type}}.png" alt="Logo" class="small_log">
           </td>
           <td>
-            <a href="attachments/{{this.message_id}}/{{this.attachment_id}}/{{this.file_name}}" target="_blank">
+            <a href="http://localhost:8000/attachments/{{this.message_id}}/{{this.attachment_id}}/{{this.file_name}}" target="_blank">
               {{this.file_name}}
             </a>
           </td>
           <td>
-            <a href="attachments/{{this.message_id}}/{{this.attachment_id}}/download/{{this.file_name}}" target="_blank">
+            <a href="http://localhost:8000/attachments/{{this.message_id}}/{{this.attachment_id}}/download/{{this.file_name}}" target="_blank">
               Download
             </a>
           </td>
-          <td><a href="emails?search={{this.message_id}}">Link</a></td>
+          <td><a href="http://localhost:8000/emails/1?search={{this.message_id}}">Link</a></td>
         </tr>
       {{/each}}
     </tbody>

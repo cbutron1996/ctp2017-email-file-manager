@@ -109,7 +109,18 @@ router.get('/', (req, res) => {
 
   let limit = 25;
   let offset = 0;
-  Attachments.findAndCountAll().then(data => {
+  let count = 0;
+  Attachments.findAndCountAll({
+    where: {
+      user_id: req.user.email,
+      $or: [
+        {  message_id: { $like: '%' + req.query.search + '%', }, },
+        {  file_name: { $like: '%' + req.query.search + '%', }, },
+        {  file_type: { $like: '%' + req.query.search + '%', }, },
+      ],
+    },
+  }).then(data => {
+    count = data.count;
     let page = 1;
     let pages = Math.ceil(data.count / limit);
     offset = limit * (page - 1);
@@ -129,11 +140,16 @@ router.get('/', (req, res) => {
       limit: limit,
       offset: offset,
     }).then((attachments) => {
+      var threshold = offset+attachments.length;
       res.render('file_section', {
         user: req.user,
         attachments: attachments,
-        page: 2,
+        prevPage: 0,
+        nextPage: 2,
         search: req.query.search,
+        count: count,
+        offset: offset+1,
+        threshold: threshold,
       });
     });
   });
@@ -144,11 +160,22 @@ router.get('/:page', (req, res) => {
     res.redirect('/attachments/1?search=');
     return;
   }
-  getAllAttachments(req);
+  // getAllAttachments(req);
 
   let limit = 25;
   let offset = 0;
-  Attachments.findAndCountAll().then(data => {
+  let count = 0;
+  Attachments.findAndCountAll({
+    where: {
+      user_id: req.user.email,
+      $or: [
+        {  message_id: { $like: '%' + req.query.search + '%', }, },
+        {  file_name: { $like: '%' + req.query.search + '%', }, },
+        {  file_type: { $like: '%' + req.query.search + '%', }, },
+      ],
+    },
+  }).then(data => {
+    count = data.count;
     let page = req.params.page;
     let pages = Math.ceil(data.count / limit);
     offset = limit * (page - 1);
@@ -169,11 +196,16 @@ router.get('/:page', (req, res) => {
       offset: offset,
     }).then((attachments) => {
       var p = parseInt(req.params.page);
+      var threshold = offset+attachments.length;
       res.render('file_section', {
         user: req.user,
         attachments: attachments,
-        page: p+1,
+        prevPage: p-1,
+        nextPage: p+1,
         search: req.query.search,
+        count: count,
+        offset: offset+1,
+        threshold: threshold,
       });
     });
   });
