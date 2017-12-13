@@ -22,38 +22,6 @@ function formatDate(date) {
   return day + ' ' + monthNames[monthIndex] + ' ' + year;
 }
 
-function getPageOfMessages(req, response) {
-  var messages = response.messages;
-  getMessages2(req, messages)
-  var nextPageToken = response.nextPageToken;
-  if(nextPageToken == null) return;
-  if(nextPageToken) {
-    var request = gmail.users.messages.list({
-      access_token: req.user.accessToken,
-      userId: 'me',
-      // q: query,
-      // labelIds: ['INBOX'],
-      maxResults: 500,
-    }, function(err, response) {
-      if (err) return;
-      getPageOfMessages(req, response);
-    });
-  }
-}
-
-function listMessages(req) {
-  var initialRequest = gmail.users.messages.list({
-    access_token: req.user.accessToken,
-    userId: 'me',
-    // q: query,
-    // labelIds: ['INBOX'],
-    maxResults: 500,
-  }, function(err, response) {
-    if (err) return;
-    getPageOfMessages(req, response);
-  });
-}
-
 function getMessages2(req, messages) {
   messages.forEach(function(message) {
     gmail.users.messages.get({
@@ -218,7 +186,6 @@ router.get('/', (req, res) => {
   }
   getMessages(req);
   updateMessages(req);
-  // listMessages(req);
 
   let limit = 25;
   let offset = 0;
@@ -284,7 +251,6 @@ router.get('/:page', (req, res) => {
   }
   // getMessages(req);
   // updateMessages(req);
-  // listMessages(req);
 
   let limit = 25;
   let offset = 0;
@@ -345,9 +311,8 @@ router.get('/:page', (req, res) => {
 });
 
 router.get('/f/fetch', (req, res) => {
-  // getMessages(req);
-  // updateMessages(req);
-  listMessages(req);
+  getMessages(req);
+  updateMessages(req);
   res.json("Complete");
 });
 
