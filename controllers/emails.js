@@ -22,37 +22,35 @@ function formatDate(date) {
   return day + ' ' + monthNames[monthIndex] + ' ' + year;
 }
 
+function getPageOfMessages(req, response) {
+  var messages = response.messages;
+  getMessages2(req, messages)
+  var nextPageToken = response.nextPageToken;
+  if(nextPageToken == null) return;
+  if(nextPageToken) {
+    var request = gmail.users.messages.list({
+      access_token: req.user.accessToken,
+      userId: 'me',
+      // q: query,
+      // labelIds: ['INBOX'],
+      maxResults: 500,
+    }, function(err, response) {
+      if (err) return;
+      getPageOfMessages(req, response);
+    });
+  }
+}
+
 function listMessages(req) {
-  var getPageOfMessages = function(response) {
-    var messages = response.messages;
-    getMessages2(req, messages)
-    var nextPageToken = response.nextPageToken;
-    if(nextPageToken) {
-      var request = gmail.users.messages.list({
-        access_token: req.user.accessToken,
-        userId: 'me',
-        // q: query,
-        labelIds: ['INBOX'],
-        maxResults: 500,
-      }, function(err, response) {
-        if (err) {
-          return;
-        }
-        getPageOfMessages(response);
-      });
-    } else {
-      return;
-    }
-  };
   var initialRequest = gmail.users.messages.list({
     access_token: req.user.accessToken,
     userId: 'me',
     // q: query,
-    labelIds: ['INBOX'],
+    // labelIds: ['INBOX'],
     maxResults: 500,
   }, function(err, response) {
     if (err) return;
-    getPageOfMessages(response);
+    getPageOfMessages(req, response);
   });
 }
 
@@ -63,9 +61,7 @@ function getMessages2(req, messages) {
       userId: 'me',
       id: message.id,
     }, function(err, response) {
-      if (err) {
-        return;
-      }
+      if (err) return;
       Emails.findOne({
         where: { message_id: response.id }
       }).then(email => {
@@ -87,6 +83,8 @@ function getMessages2(req, messages) {
 
         var body = response.snippet;
 
+        var internalDate = response.internalDate;
+
         var num_attach = 0;
         if(response.payload.parts) {
           response.payload.parts.forEach(function(part) {
@@ -105,6 +103,7 @@ function getMessages2(req, messages) {
             body: body,
             num_attach: num_attach,
             user_id: req.user.email,
+            internalDate: internalDate,
           });
         } else {
           Emails.create({
@@ -116,6 +115,7 @@ function getMessages2(req, messages) {
             body: body,
             num_attach: num_attach,
             user_id: req.user.email,
+            internalDate: internalDate,
           });
         }
       });
@@ -151,6 +151,8 @@ function updateMessages(req) {
 
           var body = response.snippet;
 
+          var internalDate = response.internalDate;
+
           var num_attach = 0;
           if(response.payload.parts) {
             response.payload.parts.forEach(function(part) {
@@ -169,6 +171,7 @@ function updateMessages(req) {
               body: body,
               num_attach: num_attach,
               user_id: req.user.email,
+              internalDate: internalDate,
             });
           }
         });
@@ -181,15 +184,11 @@ function getMessages(req) {
   var request = gmail.users.messages.list({
     access_token: req.user.accessToken,
     userId: 'me',
-    labelIds: ['INBOX'],
+    // labelIds: ['INBOX'],
     maxResults: 500,
-    // pageToken: pageToken,
   }, function(err, response) {
-    if (err) {
-      return;
-    }
+    if (err) return;
     var messages = response.messages;
-    var nextPageToken = response.nextPageToken;
     getMessages2(req, messages);
   });
 }
@@ -208,6 +207,7 @@ function getMessage(req, res) {
     // res.end(dl);
     res.header("Content-Type", 'application/json');
     res.send(JSON.stringify(response, null, '\t'));
+    console.log(response);
   });
 }
 
@@ -216,9 +216,9 @@ router.get('/', (req, res) => {
     res.redirect('/emails?search=');
     return;
   }
-  // getMessages(req);
-  // updateMessages(req);
-  listMessages(req);
+  getMessages(req);
+  updateMessages(req);
+  // listMessages(req);
 
   let limit = 25;
   let offset = 0;
@@ -254,7 +254,7 @@ router.get('/', (req, res) => {
         ],
       },
       order: [
-        ['date', 'ASC'],
+        ['internalDate', 'DESC'],
         ['from', 'ASC'],
         ['subject', 'ASC'],
         ['num_attach', 'DESC'],
@@ -320,7 +320,7 @@ router.get('/:page', (req, res) => {
         ],
       },
       order: [
-        ['date', 'ASC'],
+        ['internalDate', 'DESC'],
         ['from', 'ASC'],
         ['subject', 'ASC'],
         ['num_attach', 'DESC'],
@@ -344,13 +344,14 @@ router.get('/:page', (req, res) => {
   });
 });
 
-router.get('/fetch', (req, res) => {
-  // listMessages(req);
+router.get('/f/fetch', (req, res) => {
+  // getMessages(req);
   // updateMessages(req);
+  listMessages(req);
   res.json("Complete");
 });
 
-router.get('/:id', (req, res) => {
+router.get('/get/:id', (req, res) => {
   getMessage(req, res);
 });
 

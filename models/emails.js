@@ -10,6 +10,7 @@ module.exports = (sequelize, DataTypes) => {
     date: DataTypes.STRING,
     num_attach: DataTypes.INTEGER,
     user_id: DataTypes.STRING,
+    internalDate: DataTypes.STRING,
   });
   return Emails;
 };
