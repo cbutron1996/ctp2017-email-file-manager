@@ -1,6 +1,10 @@
 <head>
   <link rel="stylesheet" type="text/css" href="/css/emails.css">
+  <link href="https://cdn.rawgit.com/westonganger/bootstrap-directional-buttons/master/dist/bootstrap-directional-buttons.css" rel="stylesheet" type="text/css" />
 </head>
+  <button type="button" class="btn btn-xs btn-primary btn-arrow-left">Previous</button>
+  <button type="button" class="btn btn-xs btn-primary btn-arrow-right">Next</button>
+  <a href="http://localhost:8000/emails/{{this.page}}?search={{this.search}}">Page {{this.page}} of {{this.totalPages}}</a>
   <table class="table table-responsive">
     <thead>
       <tr>

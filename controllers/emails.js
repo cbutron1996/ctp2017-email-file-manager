@@ -220,9 +220,10 @@ router.get('/', (req, res) => {
 
   let limit = 25;
   let offset = 0;
+  let pages = 0;
   Emails.findAndCountAll().then(data => {
     let page = 1;
-    let pages = Math.ceil(data.count / limit);
+    pages = Math.ceil(data.count / limit);
     offset = limit * (page - 1);
     Emails.findAll({
       where: {
@@ -248,6 +249,9 @@ router.get('/', (req, res) => {
       res.render('email_section', {
         user: req.user,
         emails: emails,
+        page: 2,
+        search: req.query.search,
+        totalPages: pages,
       });
     });
   });
@@ -264,9 +268,10 @@ router.get('/:page', (req, res) => {
 
   let limit = 25;
   let offset = 0;
+  let pages = 0;
   Emails.findAndCountAll().then(data => {
     let page = req.params.page;
-    let pages = Math.ceil(data.count / limit);
+    pages = Math.ceil(data.count / limit);
     offset = limit * (page - 1);
     Emails.findAll({
       where: {
@@ -289,9 +294,13 @@ router.get('/:page', (req, res) => {
       limit: limit,
       offset: offset,
     }).then(emails => {
+      var p = parseInt(req.params.page);
       res.render('email_section', {
         user: req.user,
         emails: emails,
+        page: p+1,
+        search: req.query.search,
+        totalPages: pages,
       });
     });
   });

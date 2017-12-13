@@ -132,29 +132,11 @@ router.get('/', (req, res) => {
       res.render('file_section', {
         user: req.user,
         attachments: attachments,
+        page: 2,
+        search: req.query.search,
       });
     });
   });
-
-  // Attachments.findAll({
-  //   where: {
-  //     user_id: req.user.email,
-  //     $or: [
-  //       {  message_id: { $like: '%' + req.query.search + '%', }, },
-  //       {  file_name: { $like: '%' + req.query.search + '%', }, },
-  //       {  file_type: { $like: '%' + req.query.search + '%', }, },
-  //     ],
-  //   },
-  //   order: [
-  //     ['file_type', 'ASC'],
-  //     ['file_name', 'ASC'],
-  //   ],
-  // }).then((attachments) => {
-  //   res.render('file_section', {
-  //     user: req.user,
-  //     attachments: attachments,
-  //   });
-  // });
 });
 
 router.get('/:page', (req, res) => {
@@ -186,32 +168,15 @@ router.get('/:page', (req, res) => {
       limit: limit,
       offset: offset,
     }).then((attachments) => {
+      var p = parseInt(req.params.page);
       res.render('file_section', {
         user: req.user,
         attachments: attachments,
+        page: p+1,
+        search: req.query.search,
       });
     });
   });
-
-  // Attachments.findAll({
-  //   where: {
-  //     user_id: req.user.email,
-  //     $or: [
-  //       {  message_id: { $like: '%' + req.query.search + '%', }, },
-  //       {  file_name: { $like: '%' + req.query.search + '%', }, },
-  //       {  file_type: { $like: '%' + req.query.search + '%', }, },
-  //     ],
-  //   },
-  //   order: [
-  //     ['file_type', 'ASC'],
-  //     ['file_name', 'ASC'],
-  //   ],
-  // }).then((attachments) => {
-  //   res.render('file_section', {
-  //     user: req.user,
-  //     attachments: attachments,
-  //   });
-  // });
 });
 
 router.get('/fetch', (req, res) => {
