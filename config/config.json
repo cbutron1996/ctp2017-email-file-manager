@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "dajnludtpghtha",
-    "password": "072806a53f70e5b45df47a2288b041ae1004b0fe40d629ab024d5966a404511f",
-    "database": "d9n3sudf6pamp4",
-    "host": "ec2-54-197-234-117.compute-1.amazonaws.com",
+    "username": "ctp_user",
+    "password": "ctp_user",
+    "database": "efm_development",
+    "host": "127.0.0.1",
     "dialect": "postgresql"
   },
   "test": {
