@@ -2,10 +2,10 @@
   <link rel="stylesheet" type="text/css" href="/css/emails.css">
   <link href="https://cdn.rawgit.com/westonganger/bootstrap-directional-buttons/master/dist/bootstrap-directional-buttons.css" rel="stylesheet" type="text/css" />
 </head>
-  <a class="btn btn-xs btn-primary btn-arrow-left" href="http://localhost:8000/emails/{{this.prevPage}}?search={{this.search}}"><</a>
+  <a class="btn btn-xs btn-primary btn-arrow-left" href="/emails/{{this.prevPage}}?search={{this.search}}"><</a>
   <div class="btn btn-xs btn-link">{{this.offset}}-{{this.threshold}} of {{this.count}}</div>
-  <a class="btn btn-xs btn-primary btn-arrow-right" href="http://localhost:8000/emails/{{this.nextPage}}?search={{this.search}}">></a>
-  <a class="btn btn-xs btn-primary pull-right" href="http://localhost:8000/emails">Fetch</a>  
+  <a class="btn btn-xs btn-primary btn-arrow-right" href="/emails/{{this.nextPage}}?search={{this.search}}">></a>
+  <a class="btn btn-xs btn-primary pull-right" href="/emails">Fetch</a>
   <table class="table table-responsive">
     <thead>
       <tr>
@@ -29,7 +29,7 @@
           <td>{{this.subject}}</td>
           <!-- <td>{{this.body}}</td> -->
           <td>{{this.date}}</td>
-          <td><a href="http://localhost:8000/attachments/1?search={{this.message_id}}">{{this.num_attach}}</a></td>
+          <td><a href="/attachments/1?search={{this.message_id}}">{{this.num_attach}}</a></td>
         </tr>
       {{/each}}
     </tbody>
