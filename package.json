@@ -32,7 +32,7 @@
     "pg-hstore": "^2.3.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
-    "sequelize": "^4.13.3",
+    "sequelize": "^4.44.0",
     "sequelize-cli": "^3.0.0"
   }
 }
