@@ -5,9 +5,9 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const Users = require('../models').Users;
 
 passport.use(new GoogleStrategy({
-    clientID        : '434306998415-5f832nmc41pk44u6t6op0nfsp60la88s.apps.googleusercontent.com',
-    clientSecret    : '49Dwi-UagnZHF-zKfWfRBIu3',
-    callbackURL     : '/auth/google/callback'
+    clientID        : `${process.env.CLIENT_ID}`,
+    clientSecret    : `${process.env.CLIENT_SECRET}`,
+    callbackURL     : `${process.env.APP_HOST}/auth/google/callback`
   }, function(accessToken, refreshToken, profile, cb) {
     Users.findOne({
       where: { googleId: profile.id }

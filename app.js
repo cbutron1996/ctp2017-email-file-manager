@@ -1,3 +1,5 @@
+const dotenv = require('dotenv')
+dotenv.config({ silent: true })
 const bodyParser = require('body-parser');
 const express = require('express');
 const models = require('./models');
